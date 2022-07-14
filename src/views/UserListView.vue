@@ -1,6 +1,6 @@
 <template>
     <Content>
-        <div class="card" v-for="user in users" :key="user.id">
+        <div class="card" v-for="user in users" :key="user.id" @click="open_user_pofile(user.id)">
           <div class="card-body">
             <div class="row">
               <div class="col-1">
@@ -25,7 +25,8 @@
 import Content from '../components/Content.vue';
 import $ from 'jquery';
 import { ref } from 'vue';
-
+import router from '@/router/index';
+import {useStore} from 'vuex';
 
 export default {
   name: 'userList',
@@ -34,6 +35,7 @@ export default {
   },
 
   setup() {
+    const store = useStore();
     let users = ref([]);
 
     $.ajax({
@@ -45,8 +47,26 @@ export default {
 
     });
 
+    const open_user_pofile = userId => {
+        if (store.state.user.is_login) {
+          router.push ({
+            name : "userprofile",
+            params : {
+              userId
+            }
+          })
+        } else {
+          router.push({
+            name: "login",
+
+          });
+        }
+    }
+
+
     return {
       users,
+      open_user_pofile,
     };
   }
 }
