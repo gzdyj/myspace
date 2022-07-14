@@ -18,6 +18,8 @@ import UserProfinePosts from '../components/UserProfinePosts.vue';
 import UserProfineWriteVue from '../components/UserProfineWrite.vue';
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
+import $ from 'jquery';
+import {useStore} from 'vuex';
 
 export default {
   name: 'UserPofile',
@@ -29,41 +31,47 @@ export default {
   },
 
   setup() {
+    const store = useStore();
     const route = useRoute();
     const userId = route.params.userId;
-    
-    console.log(userId);
+    const user = reactive({});
+    const posts = reactive({});
 
+    $.ajax({
+      url : "https://app165.acapp.acwing.com.cn/myspace/getinfo/",
+      type : "GET",
+      data : {
+        user_id: userId,
+      },
+      headers : {
+        'Authorization': "Bearer "+ store.state.user.access,
+      },
+      success (resp) {
+        user.id = resp.id;
+        user.username = resp.username;
+        user.photo = resp.photo;
+        user.followerCount = resp.followerCount;
+        user.is_followd = resp.is_followd;
 
-    const user = reactive({
-      id: 1,
-      username: "guozheng",
-      lastName: "Guo",
-      firstName: "Zheng",
-      followerCount :0,
-      is_followd: false,
+      }
     });
 
-    const posts = reactive({
-      count : 3,
-      posts : [
-        {
-          id : 1,
-          userId : 1,
-          content : "今天上了web课真开心",
-        },
-        {
-          id : 2,
-          userId : 1,
-          content : "今天上了算法课，更开心了",
-        },
-        {
-          id : 3,
-          userId : 1,
-          content : "今天上了acwing，开心极了",
-        },
-      ]
-    })
+
+    $.ajax({
+      url : "https://app165.acapp.acwing.com.cn/myspace/post/",
+      type : "GET",
+      data : {
+        user_id: userId,
+      },
+      headers : {
+        'Authorization': "Bearer "+ store.state.user.access,
+      },
+      success (resp) {
+        posts.posts = resp;
+
+
+      }
+    });
 
     const follow = () => {
         if (user.is_followd) return;

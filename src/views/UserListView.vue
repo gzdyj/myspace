@@ -3,7 +3,7 @@
         <div class="card" v-for="user in users" :key="user.id" @click="open_user_pofile(user.id)">
           <div class="card-body">
             <div class="row">
-              <div class="col-1">
+              <div class="col-1 img-filed">
                 <img class="img-fluid" :src="user.photo" alt="">
               </div>
               <div class="col-11">
@@ -101,6 +101,11 @@ img {
 .card:hover {
   box-shadow: 2px 2px 10px lightpink;
   transition: 500ms;
+}
+.img-field {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 
